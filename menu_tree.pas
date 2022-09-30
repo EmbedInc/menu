@@ -20,7 +20,17 @@ procedure menu_tree_create (           {create new menu tree descriptor}
   out     tree_p: menu_tree_p_t);      {returned pointer to new menu tree}
   val_param;
 
+var
+  mem_p: util_mem_context_p_t;         {points to new mem context}
+
 begin
+  util_mem_context_get (mem, mem_p);   {make mem context for the menu tree}
+  util_mem_grab (                      {allocate new menu tree descriptor}
+    sizeof(tree_p^), mem_p^, false, tree_p);
+
+  tree_p^.mem_p := mem_p;              {save pointer to memory context}
+  tree_p^.tnam_p := nil;               {init to not associated with a file}
+  tree_p^.menu_p := nil;               {init to no top level menu}
   end;
 {
 ********************************************************************************
@@ -34,6 +44,11 @@ procedure menu_tree_delete (           {delete menu tree, deallocate all resourc
   in out  tree_p: menu_tree_p_t);      {pointer to menu tree, returned NIL}
   val_param;
 
+var
+  mem_p: util_mem_context_p_t;         {saved pointer to menu tree mem context}
+
 begin
-  tree_p := nil;
+  mem_p := tree_p^.mem_p;              {save pointer to menu tree mem context}
+  util_mem_context_del (mem_p);        {deallocate all the menu tree memory}
+  tree_p := nil;                       {return menu tree pointer invalid}
   end;
