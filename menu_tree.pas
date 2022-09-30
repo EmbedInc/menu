@@ -9,11 +9,14 @@ define menu_tree_delete;
 *
 *   Subroutine MENU_TREE_CREATE (MEM, TREE_P)
 *
-*   Create a new top level menu tree.  MEM is the parent memory context.  A
-*   subordinate context will be created.  All dynamic memory for the tree will
-*   be allocated under the subordinate context.  TREE_P is returned pointing to
-*   the new menu tree descriptor.  The tree will be initialized to default or
-*   benign values to the extent possible.
+*   Create a menu tree and the top level menu.
+*
+*   MEM is the parent memory context.  A subordinate context will be created.
+*   All dynamic memory for the tree will be allocated under the subordinate
+*   context.
+*
+*   TREE_P is returned pointing to the new menu tree descriptor.  The tree will
+*   be initialized to default or benign values to the extent possible.
 }
 procedure menu_tree_create (           {create new menu tree descriptor}
   in out  mem: util_mem_context_t;     {parent mem context, will make subordinate}
@@ -30,7 +33,12 @@ begin
 
   tree_p^.mem_p := mem_p;              {save pointer to memory context}
   tree_p^.tnam_p := nil;               {init to not associated with a file}
-  tree_p^.menu_p := nil;               {init to no top level menu}
+
+  menu_mem_alloc (                     {allocate memory for top level menu}
+    tree_p^, sizeof(tree_p^.menu_p^), tree_p^.menu_p);
+  tree_p^.menu_p^.tree_p := tree_p;    {point back to the tree}
+  tree_p^.menu_p^.ent_par_p := nil;    {top level menu, no parent menu entry}
+  tree_p^.menu_p^.ents_p := nil;       {init list of entries to empty}
   end;
 {
 ********************************************************************************

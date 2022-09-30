@@ -32,7 +32,7 @@ menu_entact_cmd_k: (                   {activation runs command}
 
   menu_t = record                      {menu at one tree node}
     tree_p: menu_tree_p_t;             {to state for whole menu tree}
-    up_p: menu_p_t;                    {to parent menu, NIL at top}
+    ent_par_p: menu_ent_p_t;           {to entry in parent menu, NIL at top}
     ents_p: menu_ent_p_t;              {to list of entries in this menu}
     end;
 
@@ -57,7 +57,13 @@ procedure menu_file_write (            {write menu tree data to file}
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 
-procedure menu_tree_create (           {create new menu tree descriptor}
+procedure menu_mem_alloc (             {allocate memory, can't individually deallocate}
+  in out  tree: menu_tree_t;           {tree memory will belong to}
+  in      sz: sys_int_adr_t;           {amount of memory to allocate}
+  out     new_p: univ_ptr);            {pnt to new mem, will be deallcated when tree del}
+  val_param; extern;
+
+procedure menu_tree_create (           {create new menu tree and top level menu}
   in out  mem: util_mem_context_t;     {parent mem context, will make subordinate}
   out     tree_p: menu_tree_p_t);      {returned pointer to new menu tree}
   val_param; extern;
