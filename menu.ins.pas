@@ -4,6 +4,13 @@
 const
   menu_subsys_k = -76;                 {MENU library susbystem ID}
 
+  menu_name_set_k = 1;                 {menu entry name already set}
+  menu_added_seq_k = 2;                {menu ent already added, can't change seq}
+  menu_added_add_k = 3;                {menu ent already added, can't add again}
+  menu_act_set_k = 4;                  {menu ent action already set}
+  menu_add_nname_k = 5;                {name not set on add entry to menu}
+  menu_add_nact_k = 6;                 {action not set on add entry to menu}
+
 type
   menu_tree_p_t = ^menu_tree_t;
   menu_p_t = ^menu_t;
@@ -44,6 +51,39 @@ menu_entact_cmd_k: (                   {activation runs command}
 {
 *   Routines.
 }
+procedure menu_ent_act_run (           {set entry action to run command}
+  in out  ent: menu_ent_t;             {menu entry to set action of}
+  in      cmd: univ string_var_arg_t;  {the command to run when entry activated}
+  out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
+procedure menu_ent_act_sub (           {set entry action to bring up submenu}
+  in out  ent: menu_ent_t;             {menu entry to set action of}
+  out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
+procedure menu_ent_add (               {add menu entry to its menu according to sequence}
+  in out  ent: menu_ent_t;             {entry to add to its parent menu}
+  out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
+procedure menu_ent_name (              {set name of menu entry, not already set}
+  in out  ent: menu_ent_t;             {entry to set name of}
+  in      name: univ string_var_arg_t; {menu entry name}
+  out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
+procedure menu_ent_new (               {create new blank menu entry}
+  in var  menu: menu_t;                {menu the new entry will belong to}
+  out     ent_p: menu_ent_p_t);        {new entry, initialized, unlinked}
+  val_param; extern;
+
+procedure menu_ent_seq (               {set menu entry sort seq, not already added to menu}
+  in out  ent: menu_ent_t;             {entry to set sort sequence number of}
+  in      seq: sys_int_machine_t;      {sort sequence number}
+  out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
 procedure menu_file_read (             {read menu tree data from file}
   in      fnam: univ string_var_arg_t; {name of menu file}
   in out  mem: util_mem_context_t;     {parent mem context, will make subordinate}
@@ -61,6 +101,12 @@ procedure menu_mem_alloc (             {allocate memory, can't individually deal
   in out  tree: menu_tree_t;           {tree memory will belong to}
   in      sz: sys_int_adr_t;           {amount of memory to allocate}
   out     new_p: univ_ptr);            {pnt to new mem, will be deallcated when tree del}
+  val_param; extern;
+
+procedure menu_mem_string (            {allocate and set fixed string}
+  in out  tree: menu_tree_t;           {tree memory will belong to}
+  in      instr: univ string_var_arg_t; {string text}
+  out     str_p: string_var_p_t);      {returned pointer to filled-in string}
   val_param; extern;
 
 procedure menu_tree_create (           {create new menu tree and top level menu}
