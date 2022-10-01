@@ -1,4 +1,4 @@
-{   Top module for the MENURUN program.
+{   Program MENURUN menufile
 }
 program menurun;
 %include 'sys.ins.pas';
@@ -10,10 +10,17 @@ program menurun;
 %include 'vect.ins.pas';
 %include 'rend.ins.pas';
 %include 'gui.ins.pas';
+%include 'menu.ins.pas';
 %include 'builddate.ins.pas';
 %include 'debug_switches.ins.pas';
 
 var
+  fnam:                                {menu file name}
+    %include '(cog)lib/string_treename.ins.pas';
+  tree_p: menu_tree_p_t;               {to menu tree}
+  ent_p: menu_ent_p_t;                 {to current menu entry}
+  n: sys_int_machine_t;                {1-N menu entry number}
+
   dev: gui_rendev_t;                   {GUI lib state for RENDlib device}
   win_root: gui_win_t;                 {root GUI library window}
   menu: gui_menu_t;                    {top level menu}
@@ -62,7 +69,13 @@ begin
 *   Start of main routine.
 }
 begin
-  writeln ('Program MENURUN built ', build_dtm_str);
+  string_cmline_init;                  {init for reading the command line}
+  string_cmline_token (fnam, stat);    {get the menu file name}
+  sys_error_abort (stat, '', '', nil, 0);
+  string_cmline_end_abort;             {nothing more allowed on command line}
+
+  menu_file_read (fnam, util_top_mem_context, tree_p, stat);
+  sys_error_abort (stat, '', '', nil, 0);
 
   gui_rendev_def (dev);                {init GUI lib REND dev state to defaults}
   rend_start;                          {init RENDlib}
@@ -78,10 +91,13 @@ redo:                                  {back here to re-create the GUI windows}
   gui_menu_create (menu, win_root);    {create top level menu}
   gui_win_set_draw (win_root, univ_ptr(addr(draw_root))); {set draw routine for root window}
 
-  gui_menu_ent_add_str (menu, 'Abcde', 1, 1);
-  gui_menu_ent_add_str (menu, 'BlahBlah', 1, 2);
-  gui_menu_ent_add_str (menu, 'Blorf', 4, 3);
-  gui_menu_ent_add_str (menu, 'Self-destruct', 6, 4);
+  ent_p := tree_p^.menu_p^.ents_p;     {init to first menu entry}
+  n := 0;
+  while ent_p <> nil do begin          {loop over the menu entries}
+    n := n + 1;                        {make 1-N number of this menu entry}
+    gui_menu_ent_add (menu, ent_p^.name_p^, 0, n); {create GUI menu entry}
+    ent_p := ent_p^.next_p;            {to next menu entry}
+    end;
 
   gui_win_draw_all (win_root);         {draw root window contents}
   gui_menu_place (menu, 0.0, dev.pixy);
