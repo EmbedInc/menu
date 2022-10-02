@@ -18,3 +18,6 @@ msg err5
 msg err6
   lan english -def
     Action for menu entry "%p1s" not set on attempt to add entry to menu.
+msg err7
+  lan english -def
+    No file name associated with menu tree on attempt to write tree to file.

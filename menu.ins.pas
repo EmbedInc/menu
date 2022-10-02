@@ -10,6 +10,7 @@ const
   menu_act_set_k = 4;                  {menu ent action already set}
   menu_add_nname_k = 5;                {name not set on add entry to menu}
   menu_add_nact_k = 6;                 {action not set on add entry to menu}
+  menu_wr_nfile_k = 7;                 {tree has no file name on attempt to write}
 
 type
   menu_tree_p_t = ^menu_tree_t;
@@ -93,7 +94,6 @@ procedure menu_file_read (             {read menu tree data from file}
 
 procedure menu_file_write (            {write menu tree data to file}
   in      tree: menu_tree_t;           {menu tree to write}
-  in      fnam: univ string_var_arg_t; {name of menu file}
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 

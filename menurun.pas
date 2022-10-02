@@ -76,6 +76,8 @@ begin
 
   menu_file_read (fnam, util_top_mem_context, tree_p, stat);
   sys_error_abort (stat, '', '', nil, 0);
+  menu_file_write (tree_p^, stat);     {write tree back to file as a test}
+  sys_error_abort (stat, '', '', nil, 0);
 
   gui_rendev_def (dev);                {init GUI lib REND dev state to defaults}
   rend_start;                          {init RENDlib}
