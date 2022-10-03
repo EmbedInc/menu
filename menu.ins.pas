@@ -27,6 +27,7 @@ type
     next_p: menu_ent_p_t;              {to next sequential entry, NIL at last}
     menu_p: menu_p_t;                  {to menu this entry is contained in}
     name_p: string_var_p_t;            {to name shown to user for this entry}
+    shcut: sys_int_machine_t;          {1-N shortcut char in name, 0 = none}
     seq: sys_int_machine_t;            {sort sequence number}
     entact: menu_entact_k_t;           {type of action on activation}
     case menu_entact_k_t of
@@ -82,6 +83,12 @@ procedure menu_ent_new (               {create new blank menu entry}
 procedure menu_ent_seq (               {set menu entry sort seq, not already added to menu}
   in out  ent: menu_ent_t;             {entry to set sort sequence number of}
   in      seq: sys_int_machine_t;      {sort sequence number}
+  out     stat: sys_err_t);            {completion status}
+  val_param; extern;
+
+procedure menu_ent_shcut (             {set menu entry shortcut key}
+  in out  ent: menu_ent_t;             {entry to set sort sequence number of}
+  in      shcut: sys_int_machine_t;    {1-N shortcut char within name, 0 = none}
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 

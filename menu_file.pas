@@ -44,26 +44,40 @@ procedure menu_file_read_entry (       {read and processes subcommands for an en
   val_param; internal;
 
 var
+  ii: sys_int_machine_t;               {scratch integer}
   cmd: string_var8192_t;               {command to run on menu activation}
 
 begin
   cmd.max := size_char(cmd.str);       {init local var string}
 
   while hier_read_line (hrd, stat) do begin {loop over commands}
-    case hier_read_keyw_pick (hrd, 'SEQ MENU RUN', stat) of
+    case hier_read_keyw_pick (hrd, 'SEQ SHCUT MENU RUN', stat) of
 {
 *   SEQ number
 }
 1: begin
-  hier_read_int (hrd, ent.seq, stat);  {get the sort sequence number}
+  hier_read_int (hrd, ii, stat);       {get the sort sequence number}
   if sys_error(stat) then return;
   if not hier_read_eol (hrd, stat)     {no more command parameters allowed}
     then return;
+  menu_ent_seq (ent, ii, stat);        {set the sort sequence number}
+  if sys_error(stat) then return;
+  end;
+{
+*   SHCUT n
+}
+2: begin
+  hier_read_int (hrd, ii, stat);       {get the shortcut character number}
+  if sys_error(stat) then return;
+  if not hier_read_eol (hrd, stat)     {no more command parameters allowed}
+    then return;
+  menu_ent_shcut (ent, ii, stat);      {set the shortcut characer number}
+  if sys_error(stat) then return;
   end;
 {
 *   MENU
 }
-2: begin
+3: begin
   if not hier_read_eol (hrd, stat)     {no command parameters allowed}
     then return;
   menu_ent_act_sub (ent, stat);        {set menu entry action to be submenu}
@@ -76,7 +90,7 @@ begin
 {
 *   RUN command
 }
-3: begin
+4: begin
   hier_read_string (hrd, cmd);         {rest of line is the command}
   menu_ent_act_run (ent, cmd, stat);   {set menu action to run the command}
   if sys_error(stat) then return;
@@ -216,6 +230,11 @@ begin
   if sys_error(stat) then return;
 
   hier_write_block_start (hwr);        {start subordinate block for ENTRY subcommands}
+
+  hier_write_tk (hwr, 'SHCUT');        {SHCUT subcommand}
+  hier_write_int (hwr, ent.shcut);     {shortcut character number}
+  hier_write_line (hwr, stat);
+  if sys_error(stat) then return;
 
   hier_write_tk (hwr, 'SEQ');          {SEQ subcommand}
   hier_write_int (hwr, ent.seq);       {sort sequence number}

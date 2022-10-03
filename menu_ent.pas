@@ -18,6 +18,7 @@
 module menu_ent;
 define menu_ent_new;
 define menu_ent_name;
+define menu_ent_shcut;
 define menu_ent_seq;
 define menu_ent_act_sub;
 define menu_ent_act_run;
@@ -46,6 +47,7 @@ begin
   ent_p^.next_p := nil;
   ent_p^.menu_p := addr(menu);         {save pointer to menu entry is within}
   ent_p^.name_p := nil;                {entry name not set yet}
+  ent_p^.shcut := 0;                   {init to no shortcut key}
   ent_p^.seq := lastof(ent_p^.seq);    {init to cause add at end of menu}
   ent_p^.entact := menu_entact_unk_k;  {init to menu action type not known}
   end;
@@ -104,6 +106,27 @@ begin
     ent.menu_p^.tree_p^,               {tree the new memory will belong to}
     name,                              {text of string to create}
     ent.name_p);                       {returned pointer to the new string}
+  end;
+{
+********************************************************************************
+*
+*   Subroutine MENU_ENT_SHCUT (ENT, SHCUT, STAT)
+*
+*   Set the shortcut key for the menu entry ENT.  SHCUT is the 1-N number of the
+*   name character to use for the shortcut.  For example, if the name is
+*   "Abcdef" then SHCUT of 3 indicates "c" is the shortcut key.  The SHCUT value
+*   of 0 indicates that this menu entry has no shortcut key.  That is also the
+*   default when the menu entry was first created.
+}
+procedure menu_ent_shcut (             {set menu entry shortcut key}
+  in out  ent: menu_ent_t;             {entry to set sort sequence number of}
+  in      shcut: sys_int_machine_t;    {1-N shortcut char within name, 0 = none}
+  out     stat: sys_err_t);            {completion status}
+  val_param;
+
+begin
+  sys_error_none (stat);               {init to no error}
+  ent.shcut := shcut;                  {set the shortcut character number}
   end;
 {
 ********************************************************************************
