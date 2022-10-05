@@ -44,7 +44,7 @@ begin
 
   rend_start;                          {init RENDlib}
   rend_open (                          {open our graphics device}
-    string_v('debug'(0)),              {name of RENDlib device to use}
+    devnam,                            {name of RENDlib device to use}
     gdev.id,                           {returned RENDlib device ID}
     stat);                             {error status}
   sys_error_abort (stat, 'rend', 'rend_open', nil, 0);

@@ -28,12 +28,14 @@ var
   ent_p: menu_ent_p_t;                 {pointer to selected MENU lib menu entry}
   mensel: menurun_sel_k_t;             {selection result of subordinate menu}
   subx, suby: real;                    {top left corner of any submenu}
+  menu_exists: boolean;                {GUI menu exists (created but not deleted)}
 
 label
   redo, leave;
 
 begin
   gui_menu_create (gmen, win_root);    {create the GUI library menu}
+  menu_exists := true;                 {indicate the GUI lib menu exists}
   menurun_menu_build (menu, gmen);     {fill in the GUI menu}
   gui_menu_place (gmen, tlx, tly);     {position the menu within the window}
 
@@ -42,10 +44,12 @@ redo:                                  {back here to re-do selection from this m
   case selid of                        {check for special handling cases}
 gui_mensel_cancel_k: begin             {user wants to cancel whole menu selection}
       menurun_select := menurun_sel_cancel_k;
+      menu_exists := false;            {menu automatically deleted on cancel}
       goto leave;
       end;
 gui_mensel_prev_k: begin               {user wants to go back to previous menu}
       menurun_select := menurun_sel_prev_k;
+      menu_exists := false;            {menu automatically deleted on previous}
       goto leave;
       end;
 gui_mensel_resize_k: begin             {windows resized, need to adjust to new config}
@@ -100,5 +104,7 @@ otherwise                              {unexpected menu entry action}
 *   Clean up and leave.  The function return value is already set.
 }
 leave:
-  gui_menu_delete (gmen);              {delete the GUI menu, release resources}
+  if menu_exists then begin
+    gui_menu_delete (gmen);            {delete the GUI menu, release resources}
+    end;
   end;
