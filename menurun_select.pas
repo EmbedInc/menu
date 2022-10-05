@@ -40,6 +40,7 @@ begin
   gui_menu_place (gmen, tlx, tly);     {position the menu within the window}
 
 redo:                                  {back here to re-do selection from this menu}
+  command.len := 0;                    {init to no command to run due to menu selection}
   discard( gui_menu_select (gmen, selid, sel_p) ); {get menu selection result}
   case selid of                        {check for special handling cases}
 gui_mensel_cancel_k: begin             {user wants to cancel whole menu selection}

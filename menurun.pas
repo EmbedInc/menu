@@ -82,12 +82,6 @@ rend_ev_wiped_resize_k: begin
       goto leave;                      {clean up and leave}
       end;
 {
-*   Run the command in the global string COMMAND.
-}
-menurun_sel_cmd_k: begin
-      writeln ('Run command: ', command.str:command.len);
-      end;
-{
 *   All other menu selection result cases are handled as if the user wants to
 *   abort the whole process.  These are the fall-thru case with no special
 *   handling.
@@ -97,4 +91,10 @@ menurun_sel_cmd_k: begin
 leave:                                 {clean up and leave}
   gui_win_delete (win_root);           {delete all GUI windows}
   rend_end;                            {stop RENDlib}
+
+  if command.len > 0 then begin        {menu selection resulted in command to run ?}
+    writeln ('Running: ', command.str:command.len); {TEMP DEBUG}
+    sys_run_shell (command, stat);     {run the command}
+    sys_error_abort (stat, '', '', nil, 0);
+    end;
   end.
