@@ -23,7 +23,7 @@ var
 begin
   name.max := size_char(name.str);     {init local var string}
 
-  ent_p := tree_p^.menu_p^.ents_p;     {init to first menu entry}
+  ent_p := menu.ents_p;                {init to first menu entry}
   n := 0;                              {init to before first entry}
 
   while ent_p <> nil do begin          {loop over the menu entries}

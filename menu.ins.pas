@@ -75,6 +75,12 @@ procedure menu_ent_name (              {set name of menu entry, not already set}
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 
+procedure menu_ent_n (                 {find Nth menu entry}
+  in      menu: menu_t;                {menu to find entry within}
+  in      n: sys_int_machine_t;        {1-N number of entry to find}
+  out     ent_p: menu_ent_p_t);        {returned pointer to Nth entry, NIL if not exist}
+  val_param; extern;
+
 procedure menu_ent_new (               {create new blank menu entry}
   in var  menu: menu_t;                {menu the new entry will belong to}
   out     ent_p: menu_ent_p_t);        {new entry, initialized, unlinked}

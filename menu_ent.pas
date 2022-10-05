@@ -23,6 +23,7 @@ define menu_ent_seq;
 define menu_ent_act_sub;
 define menu_ent_act_run;
 define menu_ent_add;
+define menu_ent_n;
 %include 'menu2.ins.pas';
 {
 ********************************************************************************
@@ -284,5 +285,33 @@ begin
     ;
   if ent.next_p <> nil then begin      {there is a following entry ?}
     ent.next_p^.prev_p := addr(ent);   {update backward link in next entry}
+    end;
+  end;
+{
+********************************************************************************
+*
+*   Subroutine MENU_ENT_N (MENU, N, ENT_P)
+*
+*   Find the Nth entry in the menu MENU.  Menu entries are numbered starting
+*   with 1.  ENT_P is returned pointing to the Nth entry, or NIL if there is no
+*   Nth entry in MENU.
+}
+procedure menu_ent_n (                 {find Nth menu entry}
+  in      menu: menu_t;                {menu to find entry within}
+  in      n: sys_int_machine_t;        {1-N number of entry to find}
+  out     ent_p: menu_ent_p_t);        {returned pointer to Nth entry, NIL if not exist}
+  val_param;
+
+var
+  ii: sys_int_machine_t;
+
+begin
+  ent_p := menu.ents_p;                {init pointer to first entry}
+  ii := 1;                             {init number of entry pointed to by ENT_P}
+
+  while ent_p <> nil do begin          {sequentially scan the list of entries}
+    if ii = n then return;             {this is the Nth entry ?}
+    ent_p := ent_p^.next_p;            {no, advance to next}
+    ii := ii + 1;                      {update sequential number for new entry}
     end;
   end;
