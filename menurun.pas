@@ -9,6 +9,8 @@ var
     %include '(cog)lib/string_treename.ins.pas';
   devnam:                              {name of RENDlib device to open}
     %include '(cog)lib/string80.ins.pas';
+  tree_p: menu_tree_p_t;               {to menu tree}
+  gdev: gui_rendev_t;                  {GUI lib state for RENDlib device}
   ev: rend_event_t;                    {RENDlib event descriptor}
   stat: sys_err_t;                     {completion status}
 

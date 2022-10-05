@@ -21,8 +21,6 @@ type
     menurun_sel_cmd_k);                {run the command in COMMAND}
 
 var (menurun_com)
-  tree_p: menu_tree_p_t;               {to menu tree}
-  gdev: gui_rendev_t;                  {GUI lib state for RENDlib device}
   win_root: gui_win_t;                 {root GUI library window}
   command: string_var8192_t;           {command to execute as result of menu selection}
 
