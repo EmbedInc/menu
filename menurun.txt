@@ -1,0 +1,100 @@
+                          Embed program MENURUN
+                              7 October 2022
+
+menurun filename
+
+The program displays a tree-structured menu to the user.  Menu entries can
+be selected by left-clicking on them.
+
+The up/down arrow keys can be used to go to previous/next menu entries in
+the same menu.  Left arrow aborts the current menu and goes back to the
+previous menu.  Right arrow goes to the submenu indicated by the current
+menu entry, if the current entry is a submenu.  ENTER selects the current
+menu entry.
+
+When a menu entry is selected, the command associated with that entry is
+run.  If the menu entry is for a submenu, then the submenu is displayed
+and becomes the current menu.
+
+The FILENAME command line option is the name of the menu file that
+describes the menu tree to present to the user.  The ".menu" mandatory
+file name suffix may be omitted from FILENAME.
+
+
+                             Menu file format
+
+Menu files contain lines of text.  Each line is a command starting with a
+keyword, possibly followed by parameters to the command.  Commands and
+their parameters are separated by one or more spaces.  If a parameter
+contains spaces, then it must be enclosed in quotes ("") or apostrophies
+('').
+
+The information in a menu file is hierarchical, with the indentation level
+of each command indicating the nesting level within the hierarchy.  Top
+level commands start in column 1.  Each additional level of nesting is
+indicated by an additional two spaces.  Commands starting in even column
+numbers are not allowed.
+
+There is no explicit syntax for ending a subordinte block.  Commands at
+higher levels (less indentation) implicitly end any blocks that were open
+at a lower level.
+
+Keywords, like command names, are case-insensitive.
+
+The commands are:
+
+  ENTRY name
+
+    Defines a menu entry at the current level.  NAME is the name string
+    shown to the user for this menu entry.  As with all parameters, if
+    NAME contains spaces, then it must be enclosed in quotes or
+    apostrophies.
+
+    The ENTRY command starts a subordinate block of subcommands that
+    provide additional information about the menu entry.  The ENTRY
+    subcommands are:
+
+    SHCUT n
+
+      Identifies a shortcut character for the menu entry.  N is the 1-n
+      number of the name character that is the shortcut.  This character
+      in the name may be shown differently to the user, like underlined
+      for example.
+
+      The special N value of 0 indicates that there is no shortcut letter
+      for this menu entry.  This is also the default when SHCUT is not
+      used.
+
+    SEQ n
+
+      Sets the sorting sequence number of this entry.  Entries appear in
+      the menu by ascending sequence number, not necessarily the order
+      they appear in the menu file.
+
+      An entry is added to the menu immediately after the last entry that
+      has a sequence number less than or equal to N.  This means that
+      entries in the same menu with the same sequence number will appear
+      in the menu in the order they are encountered in the menu file.
+
+      The default sequence number is the largest possible value,
+      16#7FFFFFFF or 2147483647.  Therefore menu entries will appear in
+      the order they are in the menu file unless SEQ commands are used.
+
+    MENU
+
+      Starts a subordinate block for a submenu.  The current menu entry
+      will bring up this submenu when selected.  The same commands as at
+      the top level are expected in the subordinate level below the MENU
+      subcommand.
+
+    RUN command
+
+      Indicates the command to run when the menu entry is selected.
+      COMMAND is not a string.  The whole rest of the line after "RUN "
+      will be taken as the command to run.  The command line can therefore
+      have spaces, but need not be enclosed in quotes.
+
+      When the entry is selected, the first token of COMMAND will be
+      expanded to a native pathname according to the Embed pathname rules.
+      The expanded pathname followed by the rest of the command line will
+      be passed to the operating system for execution.
