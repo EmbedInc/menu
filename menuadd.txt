@@ -1,0 +1,52 @@
+                          Embed Program MENUADD
+                             7 October 2022
+
+menuadd [filename] [options]
+
+Add an entry to the menu file indicated by FILENAME.  The mandatory
+".menu" file name suffix may be omitted from FILENAME.  See the MENURUN
+documentation file for the menu file format.
+
+The menu file will be read and corresponding data structures built in
+memory.  The in-memory data is altered according to the command line
+options, then the result written back to the same menu file.  The menu
+file is therefore completely re-written by this program.
+
+It is allowed for the menu file to not exist orginally.  That is interpret
+as an empty menu tree.
+
+The command line options are:
+
+  -N seq name
+
+    Gives the next menu entry name in the hierarchy to the leaf-node
+    entry.  The first -N option gives the name of the top level menu
+    entry.  The second -N option the name of the entry in the first
+    subordinate menu, etc.  The last -N option gives the leaf-node menu
+    entry name.
+
+    SEQ is the sort sequence number of where to insert the entry NAME in
+    the current menu.  The new entry will be inserted immediately after
+    the last entry in the current menu with a sort sequence number less
+    than or equal to SEQ.
+
+  -SH n
+
+    Indicate that name character N is the shortcut character for this menu
+    entry.  N of 0 specifies not shortcut character, which is also the
+    default.  This command line option applies to the most recent -N
+    option.
+
+  -IN dir
+
+    Set the current directory the command will be run in as DIR.  Embed
+    pathname rules are applied to DIR when the menu entry is selected.
+    The default is the current directory the MENURUN program is run with.
+
+  -CMD command
+
+    The command to run.  The whole remainder of the MENUADD command line
+    after "-CMD " will be taken as the command to run when the menu entry
+    is selected.  This command line option is required, and is always the
+    last option on the command line.
+

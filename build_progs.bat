@@ -7,4 +7,5 @@ rem
 setlocal
 call build_pasinit
 
+src_progl menuadd
 src_progl menurun

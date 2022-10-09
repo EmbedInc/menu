@@ -69,6 +69,12 @@ procedure menu_ent_add (               {add menu entry to its menu according to 
   out     stat: sys_err_t);            {completion status}
   val_param; extern;
 
+procedure menu_ent_find (              {find entry of particular name}
+  in      menu: menu_t;                {menu to look for entry in}
+  in      name: univ string_var_arg_t; {entry name to look for}
+  out     ent_p: menu_ent_p_t);        {points to found entry, NIL for not found}
+  val_param; extern;
+
 procedure menu_ent_name (              {set name of menu entry, not already set}
   in out  ent: menu_ent_t;             {entry to set name of}
   in      name: univ string_var_arg_t; {menu entry name}
@@ -129,4 +135,9 @@ procedure menu_tree_create (           {create new menu tree and top level menu}
 
 procedure menu_tree_delete (           {delete menu tree, deallocate all resources}
   in out  tree_p: menu_tree_p_t);      {pointer to menu tree, returned NIL}
+  val_param; extern;
+
+procedure menu_tree_name (             {set menu tree file name}
+  in out  tree: menu_tree_t;           {the menu tree}
+  in      name: univ string_var_arg_t); {file name}
   val_param; extern;

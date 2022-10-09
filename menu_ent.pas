@@ -24,6 +24,7 @@ define menu_ent_act_sub;
 define menu_ent_act_run;
 define menu_ent_add;
 define menu_ent_n;
+define menu_ent_find;
 %include 'menu2.ins.pas';
 {
 ********************************************************************************
@@ -313,5 +314,29 @@ begin
     if ii = n then return;             {this is the Nth entry ?}
     ent_p := ent_p^.next_p;            {no, advance to next}
     ii := ii + 1;                      {update sequential number for new entry}
+    end;
+  end;
+{
+********************************************************************************
+*
+*   Subroutine MENU_ENT_FIND (MENU, NAME, ENT_P)
+*
+*   Find the entry of name NAME within the menu MENU.  ENT_P is returned
+*   pointing to the entry if found, NIL otherwise.
+}
+procedure menu_ent_find (              {find entry of particular name}
+  in      menu: menu_t;                {menu to look for entry in}
+  in      name: univ string_var_arg_t; {entry name to look for}
+  out     ent_p: menu_ent_p_t);        {points to found entry, NIL for not found}
+  val_param;
+
+begin
+  ent_p := menu.ents_p;                {init to first entry in list}
+
+  while ent_p <> nil do begin          {scan the menu entries}
+    if string_equal(ent_p^.name_p^, name) then begin {found it ?}
+      return;
+      end;
+    ent_p := ent_p^.next_p;            {to next entry in the menu}
     end;
   end;
