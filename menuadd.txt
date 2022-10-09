@@ -1,5 +1,5 @@
                           Embed Program MENUADD
-                             7 October 2022
+                             9 October 2022
 
 menuadd [filename] [options]
 
@@ -41,7 +41,7 @@ The command line options are:
 
     Set the current directory the command will be run in as DIR.  Embed
     pathname rules are applied to DIR when the menu entry is selected.
-    The default is the current directory the MENURUN program is run with.
+    The default is the current directory the MENURUN program is run in.
 
   -CMD command
 
@@ -49,4 +49,3 @@ The command line options are:
     after "-CMD " will be taken as the command to run when the menu entry
     is selected.  This command line option is required, and is always the
     last option on the command line.
-

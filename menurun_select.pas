@@ -95,6 +95,9 @@ menu_entact_submenu_k: begin           {bring up submenu}
 
 menu_entact_cmd_k: begin               {run command}
       string_copy (ent_p^.cmd_p^, command); {save command line to run}
+      if ent_p^.cmd_dir_p <> nil then begin {run command in specific directory ?}
+        string_copy (ent_p^.cmd_dir_p^, cmddir); {save dir to run command in}
+        end;
       menurun_select := menurun_sel_cmd_k; {indicate to run command}
       end;
 

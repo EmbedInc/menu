@@ -213,14 +213,20 @@ done_opts:                             {done with all the command line options}
           end
         ;
       end;
-
+    {
+    *   Create the new menu entry.
+    }
     menu_ent_new (menu_p^, ent_p);     {create new blank menu entry}
+
     menu_ent_name (ent_p^, name_p^.name, stat); {set entry name}
     sys_error_abort (stat, '', '', nil, 0);
+
     menu_ent_seq (ent_p^, name_p^.seq, stat); {set sort sequence number}
     sys_error_abort (stat, '', '', nil, 0);
+
     menu_ent_shcut (ent_p^, name_p^.shcut, stat); {set shortcut character}
     sys_error_abort (stat, '', '', nil, 0);
+
     if name_p^.next_p <> nil
       then begin                       {this name is for a submenu}
         menu_ent_act_sub (ent_p^, stat); {make it a submenu}
@@ -229,6 +235,10 @@ done_opts:                             {done with all the command line options}
       else begin                       {this name is for leaf-node entry}
         menu_ent_act_run (ent_p^, command, stat);
         sys_error_abort (stat, '', '', nil, 0);
+        if rundir.len > 0 then begin   {specific working working directory ?}
+          menu_ent_run_dir (ent_p^, rundir, stat); {set directory to run command in}
+          sys_error_abort (stat, '', '', nil, 0);
+          end
         end
       ;
     menu_ent_add (ent_p^, stat);       {add new entry to list for this menu}

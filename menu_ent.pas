@@ -22,6 +22,7 @@ define menu_ent_shcut;
 define menu_ent_seq;
 define menu_ent_act_sub;
 define menu_ent_act_run;
+define menu_ent_run_dir;
 define menu_ent_add;
 define menu_ent_n;
 define menu_ent_find;
@@ -133,7 +134,7 @@ begin
 {
 ********************************************************************************
 *
-*   Subroutine MENU_ENT_SEQ (ENT, SEQ)
+*   Subroutine MENU_ENT_SEQ (ENT, SEQ, STAT)
 *
 *   Set the sort sequence number of the menu entry ENT to SEQ.  The entry must
 *   not already be added to the menu.
@@ -163,7 +164,7 @@ begin
 {
 ********************************************************************************
 *
-*   Subroutine MENU_ENT_ACT_SUB (ENT)
+*   Subroutine MENU_ENT_ACT_SUB (ENT, STAT)
 *
 *   Set the action of the menu entry to bring up a subordinate menu.  An empty
 *   menu is created and set as the action of the menu entry.
@@ -196,7 +197,7 @@ begin
 {
 ********************************************************************************
 *
-*   Subroutine MENU_ENT_ACT_RUN (ENT, CMD)
+*   Subroutine MENU_ENT_ACT_RUN (ENT, CMD, STAT)
 *
 *   Set the action of menu entry ENT to run a command.  CMD is the command line
 *   to run when the menu entry is activated.
@@ -221,11 +222,47 @@ begin
     ent.menu_p^.tree_p^,               {tree the new memory will belong to}
     cmd,                               {text of string to create}
     ent.cmd_p);                        {returned pointer to the new string}
+  ent.cmd_dir_p := nil;                {init to directory to run in not specified}
   end;
 {
 ********************************************************************************
 *
-*   Subroutine MENU_ENT_ADD (ENT)
+*   Subroutine MENU_ENT_RUN_DIR (ENT, DIR, STAT)
+*
+*   Set DIR as the directory to run the menu entry command in.  The menu entry
+*   must have been previously set up to run a command, and the directory to run
+*   that command in must not already be set.
+}
+procedure menu_ent_run_dir (           {set directory to run command in}
+  in out  ent: menu_ent_t;             {menu entry to set action of}
+  in      dir: univ string_var_arg_t;  {directory to run command in, empty = don't care}
+  out     stat: sys_err_t);            {completion status}
+  val_param;
+
+begin
+  if ent.entact <> menu_entact_cmd_k then begin {entry doesn't run command ?}
+    sys_stat_set (menu_subsys_k, menu_stat_ncmd_k, stat);
+    sys_stat_parm_vstr (ent.name_p^, stat);
+    return;
+    end;
+  if ent.cmd_dir_p <> nil then begin   {directory previously set ?}
+    sys_stat_set (menu_subsys_k, menu_stat_dirset_k, stat);
+    sys_stat_parm_vstr (ent.name_p^, stat);
+    return;
+    end;
+  sys_error_none (stat);
+
+  if dir.len <= 0 then return;         {no dir specified, leave NIL pointer ?}
+
+  menu_mem_string (                    {create directory name in dynamic memory}
+    ent.menu_p^.tree_p^,               {tree the new memory will belong to}
+    dir,                               {text of string to create}
+    ent.cmd_dir_p);                    {returned pointer to the new string}
+  end;
+{
+********************************************************************************
+*
+*   Subroutine MENU_ENT_ADD (ENT, STAT)
 *
 *   Add the menu entry ENT to the menu it is associated with.  Menu entries must
 *   be added to a menu for them to be displayable, selected, and acted upon.

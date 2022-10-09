@@ -21,3 +21,11 @@ msg err6
 msg err7
   lan english -def
     No file name associated with menu tree on attempt to write tree to file.
+msg err8
+  lan english -def
+    Menu entry "%p1s" is not set up to run a command, on attempt to set
+    the working directory to run command in.
+msg err9
+  lan english -def
+    Attempt to set the working directory for the command of menu entry
+    "%p1s" when this directory is already set.

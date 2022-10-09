@@ -45,13 +45,13 @@ procedure menu_file_read_entry (       {read and processes subcommands for an en
 
 var
   ii: sys_int_machine_t;               {scratch integer}
-  cmd: string_var8192_t;               {command to run on menu activation}
+  str: string_var8192_t;               {scratch string}
 
 begin
-  cmd.max := size_char(cmd.str);       {init local var string}
+  str.max := size_char(str.str);       {init local var string}
 
   while hier_read_line (hrd, stat) do begin {loop over commands}
-    case hier_read_keyw_pick (hrd, 'SEQ SHCUT MENU RUN', stat) of
+    case hier_read_keyw_pick (hrd, 'SEQ SHCUT MENU RUN IN', stat) of
 {
 *   SEQ number
 }
@@ -91,8 +91,19 @@ begin
 *   RUN command
 }
 4: begin
-  hier_read_string (hrd, cmd);         {rest of line is the command}
-  menu_ent_act_run (ent, cmd, stat);   {set menu action to run the command}
+  hier_read_string (hrd, str);         {rest of line is the command}
+  menu_ent_act_run (ent, str, stat);   {set menu action to run the command}
+  if sys_error(stat) then return;
+  end;
+{
+*   IN dir
+}
+5: begin
+  discard( hier_read_tk_req (hrd, str, stat) ); {get the directory pathname}
+  if sys_error(stat) then return;
+  if not hier_read_eol (hrd, stat)     {no more command parameters allowed}
+    then return;
+  menu_ent_run_dir (ent, str, stat);   {set the working directory for the command}
   if sys_error(stat) then return;
   end;
 {
@@ -259,6 +270,13 @@ menu_entact_cmd_k: begin               {activation runs a command}
       hier_write_vstr (hwr, ent.cmd_p^); {write the command line}
       hier_write_line (hwr, stat);
       if sys_error(stat) then return;
+
+      if ent.cmd_dir_p <> nil then begin {curr dir for command is specified ?}
+        hier_write_tk (hwr, 'IN');     {IN subcommand}
+        hier_write_vtk (hwr, ent.cmd_dir_p^); {write the directory pathname}
+        hier_write_line (hwr, stat);
+        if sys_error(stat) then return;
+        end;
       end;
 
     end;                               {end of activation type cases}

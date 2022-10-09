@@ -23,6 +23,7 @@ type
 var (menurun_com)
   win_root: gui_win_t;                 {root GUI library window}
   command: string_var8192_t;           {command to execute as result of menu selection}
+  cmddir: string_treename_t;           {directory to run command in, empty = unspecified}
 
 procedure draw_root (                  {draw routine for WIN_ROOT window}
   in      win_p: gui_win_p_t;          {pointer to the window to redraw}

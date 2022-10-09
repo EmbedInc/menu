@@ -1,5 +1,5 @@
                           Embed program MENURUN
-                              7 October 2022
+                              9 October 2022
 
 menurun filename
 
@@ -98,3 +98,15 @@ The commands are:
       expanded to a native pathname according to the Embed pathname rules.
       The expanded pathname followed by the rest of the command line will
       be passed to the operating system for execution.
+
+    IN dir
+
+      Specifies the directory to run the command in.  The RUN command must
+      have been used previously for this menu entry, and the IN command
+      not.
+
+      DIR is the directory to run the command in.  It will be expanded
+      using Embed pathname rules when the command is run.  The empty
+      string specifies no directory, which leaves the directory the
+      program is run in undefined.  The default is that the directory is
+      not defined.

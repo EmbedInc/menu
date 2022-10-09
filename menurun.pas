@@ -22,6 +22,10 @@ begin
 *   Initialize common block state.
 }
   command.max := size_char(command.str);
+  command.len := 0;
+
+  cmddir.max := size_char(cmddir.str);
+  cmddir.len := 0;
 {
 *   Process the command line.
 }
@@ -93,7 +97,10 @@ leave:                                 {clean up and leave}
   rend_end;                            {stop RENDlib}
 
   if command.len > 0 then begin        {menu selection resulted in command to run ?}
-    writeln ('Running: ', command.str:command.len); {TEMP DEBUG}
+    if cmddir.len > 0 then begin       {run command in specific directory ?}
+      file_currdir_set (cmddir, stat); {go to directory to run command in}
+      sys_error_abort (stat, '', '', nil, 0);
+      end;
     sys_run_shell (command, stat);     {run the command}
     sys_error_abort (stat, '', '', nil, 0);
     end;

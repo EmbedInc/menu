@@ -11,6 +11,8 @@ const
   menu_add_nname_k = 5;                {name not set on add entry to menu}
   menu_add_nact_k = 6;                 {action not set on add entry to menu}
   menu_wr_nfile_k = 7;                 {tree has no file name on attempt to write}
+  menu_stat_ncmd_k = 8;                {menu entry not set up to run command}
+  menu_stat_dirset_k = 9;              {directory for command alread set in menu entry}
 
 type
   menu_tree_p_t = ^menu_tree_t;
@@ -36,6 +38,7 @@ menu_entact_submenu_k: (               {activation brings up submenu}
       );
 menu_entact_cmd_k: (                   {activation runs command}
       cmd_p: string_var_p_t;           {command to run on activation}
+      cmd_dir_p: string_var_p_t;       {dir to run command in, empty for don't care}
       );
     end;
 
@@ -90,6 +93,12 @@ procedure menu_ent_n (                 {find Nth menu entry}
 procedure menu_ent_new (               {create new blank menu entry}
   in var  menu: menu_t;                {menu the new entry will belong to}
   out     ent_p: menu_ent_p_t);        {new entry, initialized, unlinked}
+  val_param; extern;
+
+procedure menu_ent_run_dir (           {set directory to run command in}
+  in out  ent: menu_ent_t;             {menu entry to set action of}
+  in      dir: univ string_var_arg_t;  {directory to run command in, empty = don't care}
+  out     stat: sys_err_t);            {completion status}
   val_param; extern;
 
 procedure menu_ent_seq (               {set menu entry sort seq, not already added to menu}
